@@ -407,8 +407,8 @@ CheckXEdges:
     RTS
 
 CheckRightGoal:
-    ; ---- Right goal: BallX >= 152 ----
-    CMP #152
+    ; ---- Right goal: BallX >= 156 (past paddle zone 148-155) ----
+    CMP #156
     BCC CheckLeftPaddle
     ; Left player scores
     INC Score0
