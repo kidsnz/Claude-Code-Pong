@@ -216,11 +216,12 @@ ClearLoop:
 ;;; ============================================================
 Frame:
     ;;; ---- VSYNC: 3 lines ----
+    STA WSYNC           ; sync to line boundary before VSYNC
     LDA #%00000010
     STA VSYNC
-    STA WSYNC
-    STA WSYNC
-    STA WSYNC
+    STA WSYNC           ; VSYNC line 1
+    STA WSYNC           ; VSYNC line 2
+    STA WSYNC           ; VSYNC line 3
     LDA #0
     STA VSYNC
 
@@ -251,13 +252,14 @@ VBWait:
     ;;; ---- Overscan: 30 lines ----
     LDA #%00000010
     STA VBLANK
-    LDA #36         ; 36*64=2304 cycles ≈ 30.3 lines (standard: 30)
+    LDA #35         ; 35*64=2240 cycles ≈ 29.5 lines + STA WSYNC = 30 lines
     STA TIM64T
 
 OSWait:
     LDA INTIM
     BNE OSWait
 
+    STA WSYNC           ; sync to line boundary before restarting VSYNC
     JMP Frame
 
 ;;; ============================================================
