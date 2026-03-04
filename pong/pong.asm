@@ -251,7 +251,7 @@ VBWait:
     ;;; ---- Overscan: 30 lines ----
     LDA #%00000010
     STA VBLANK
-    LDA #35
+    LDA #36         ; 36*64=2304 cycles ≈ 30.3 lines (standard: 30)
     STA TIM64T
 
 OSWait:
@@ -837,12 +837,10 @@ PlayDone:
     ;;; = 170 lines. Need 192 total -> 22 more lines.
     ;;; Wait, let's count:
     ;;;   Pos lines: 3 (WSYNC+HMOVE pairs)
-    ;;;   Score: 5 + 2 blank = 7
-    ;;;   Sep: 8
-    ;;;   Play: 160
-    ;;;   Total: 178. Need 192 -> 14 more.
+    ;;;   Pos: 4, Score+blank: 7, Sep: 8, Play: 160 = 179
+    ;;;   Need 192 -> 13 more bottom blank lines
     ;;; ======================================================
-    LDX #12
+    LDX #13
 .botLoop:
     STA WSYNC
     DEX
