@@ -89,8 +89,8 @@ INIT_P0Y    = 68
 INIT_P1Y    = 68
 INIT_BALLX  = 76    ; near center
 INIT_BALLY  = 68
-INIT_BALLDX = 2     ; ball speed = 2 px/frame
-INIT_BALLDY = 1
+INIT_BALLDX = 0     ; STEP1: frozen (will add movement later)
+INIT_BALLDY = 0
 
 ;;; Play area bottom (max BallY / P0Y+PAD_HEIGHT)
 PLAY_BOT    = 159
@@ -232,8 +232,9 @@ Frame:
 
     ; --- Game Logic During VBLANK ---
     JSR ReadJoy
-    JSR MoveBall
-    JSR CheckCollisions
+    ; STEP1: MoveBall and CheckCollisions disabled - ball is frozen
+    ;JSR MoveBall
+    ;JSR CheckCollisions
     JSR UpdateSound
 
 VBWait:
