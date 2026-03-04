@@ -683,6 +683,7 @@ DrawScreen:
     LDA #COL_PAD
     STA COLUP0
     STA COLUP1
+    STA COLUPF          ; Fix: ball color (COLUPF was never set -> ball was black on black)
     LDA #0
     STA ENABL           ; Ball off during score/separator
 
