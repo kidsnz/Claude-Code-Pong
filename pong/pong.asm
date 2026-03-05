@@ -48,6 +48,7 @@ CXCLR   = $2C
 ;;; ============================================================
 SWCHA   = $280
 INTIM   = $284
+INSTAT  = $285   ; Timer status: bit 7 set when timer has expired (stays set until new timer write)
 TIM64T  = $296
 
 ;;; ============================================================
@@ -242,8 +243,8 @@ Frame:
     JSR UpdateSound
 
 VBWait:
-    LDA INTIM
-    BNE VBWait
+    LDA INSTAT          ; bit 7 = timer expired (stays set - won't miss it)
+    BPL VBWait          ; loop while bit 7 clear (timer still running)
 
     STA WSYNC
     LDA #0
@@ -259,8 +260,8 @@ VBWait:
     STA TIM64T
 
 OSWait:
-    LDA INTIM
-    BNE OSWait
+    LDA INSTAT          ; bit 7 = timer expired
+    BPL OSWait          ; loop while bit 7 clear
 
     STA WSYNC           ; sync to line boundary before restarting VSYNC
     JMP Frame
