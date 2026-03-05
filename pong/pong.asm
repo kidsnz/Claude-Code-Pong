@@ -235,7 +235,7 @@ ReadJoy:
 DrawScreen:
 
     ; HMP0/HMP1 を事前設定
-    LDA #$30            ; HMP0: 右に3カラークロック (RESP0を4cycle遅らせ+12cc、HMP-4 = 正味+8px)
+    LDA #$70            ; HMP0: 右に7カラークロック -> P0 x=7
     STA HMP0
     LDA #$10            ; HMP1: 右に1カラークロック
     STA HMP1
