@@ -216,7 +216,6 @@ ClearLoop:
 ;;; ============================================================
 Frame:
     ;;; ---- VSYNC: 3 lines ----
-    STA WSYNC           ; sync to line boundary before VSYNC
     LDA #%00000010
     STA VSYNC
     STA WSYNC           ; VSYNC line 1
