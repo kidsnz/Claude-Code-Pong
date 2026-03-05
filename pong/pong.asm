@@ -53,7 +53,8 @@ NxtGRP1 ds 1    ; 次ライン用 GRP1 値
 ;;; Constants
 ;;; ============================================================
 PAD_HEIGHT  = 48        ; パドルの高さ (スキャンライン数)
-PAD_SPRITE  = $F0       ; 上位4ビット = 半幅パドル
+PAD_SPRITE0 = $F0       ; P0用: 上位4ビット (左側4px) = 左端に寄せる
+PAD_SPRITE1 = $0F       ; P1用: 下位4ビット (右側4px) = 右端に寄せる
 PAD_INIT_Y  = 71        ; 初期Y位置 (中央: 190/2 - 48/2 = 71)
 PAD_BOT     = 142       ; パドル上端の最大値 (190 - 48 = 142)
 PAD_SPEED   = 2         ; 1フレームあたりの移動量
@@ -303,7 +304,7 @@ DrawLoop:
     BCC .p0Off          ; X < P0Y -> パドル範囲外
     CMP #PAD_HEIGHT
     BCS .p0Off          ; X >= P0Y + PAD_HEIGHT -> 範囲外
-    LDA #PAD_SPRITE
+    LDA #PAD_SPRITE0
     JMP .p0Store
 .p0Off:
     LDA #0
@@ -317,7 +318,7 @@ DrawLoop:
     BCC .p1Off
     CMP #PAD_HEIGHT
     BCS .p1Off
-    LDA #PAD_SPRITE
+    LDA #PAD_SPRITE1
     JMP .p1Store
 .p1Off:
     LDA #0
