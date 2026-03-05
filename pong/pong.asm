@@ -208,6 +208,10 @@ ClearLoop:
     DEX
     BNE ClearLoop
 
+    ; Ensure VBLANK is on before first VSYNC (ClearLoop sets it to 0)
+    LDA #%00000010
+    STA VBLANK
+
     ; Initialize game
     JSR InitGame
 
