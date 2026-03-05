@@ -1,7 +1,8 @@
 ;;; ============================================================
-;;; Atari 2600 Pong - Step 1: Static Paddles Only
+;;; Atari 2600 Pong - Step 2: パドルを上下に動かす
 ;;;
-;;; 左右に静止したパドルを表示するのみ。
+;;; ジョイスティック0 (上下) -> 左パドル
+;;; ジョイスティック1 (上下) -> 右パドル
 ;;; ============================================================
 
     processor 6502
@@ -27,8 +28,15 @@ HMCLR   = $2B
 ;;; ============================================================
 ;;; RIOT Registers
 ;;; ============================================================
+SWCHA   = $280          ; ジョイスティック入力 (アクティブLOW)
 INSTAT  = $285
 TIM64T  = $296
+
+;;; ジョイスティックビット (SWCHA, アクティブLOW)
+JOY0_UP   = %00010000  ; bit4
+JOY0_DOWN = %00100000  ; bit5
+JOY1_UP   = %00000001  ; bit0
+JOY1_DOWN = %00000010  ; bit1
 
 ;;; ============================================================
 ;;; RAM - Zero Page ($80-$FF)
@@ -47,6 +55,8 @@ NxtGRP1 ds 1    ; 次ライン用 GRP1 値
 PAD_HEIGHT  = 24        ; パドルの高さ (スキャンライン数)
 PAD_SPRITE  = $FF       ; 全8ビット = フル幅パドル
 PAD_INIT_Y  = 83        ; 初期Y位置 (中央: 190/2 - 24/2 = 83)
+PAD_BOT     = 166       ; パドル上端の最大値 (190 - 24 = 166)
+PAD_SPEED   = 2         ; 1フレームあたりの移動量
 
 COL_BG      = $00       ; 背景: 黒
 COL_PAD     = $0F       ; パドル: 白
@@ -101,6 +111,9 @@ Frame:
     LDA #43             ; 43*64 = 2752 cycles ≈ 37 lines
     STA TIM64T
 
+    ; --- VBLANK中のゲームロジック ---
+    JSR ReadJoy         ; ジョイスティック読み込み & パドル移動
+
 VBWait:
     LDA INSTAT          ; bit7 = タイマー満了
     BPL VBWait
@@ -124,6 +137,87 @@ OSWait:
 
     STA WSYNC
     JMP Frame
+
+;;; ============================================================
+;;; ReadJoy - ジョイスティック入力を読んでパドルを動かす
+;;;
+;;; SWCHA ビット: アクティブLOW (0 = 押されている)
+;;;   Player0: bit4=UP, bit5=DOWN
+;;;   Player1: bit0=UP, bit1=DOWN
+;;; ============================================================
+ReadJoy:
+    LDA SWCHA
+
+    ; --- Player0 UP (bit4) ---
+    PHA                 ; A を保存
+    AND #JOY0_UP
+    BNE .p0NoUp         ; bit4 が 1 (押されていない) -> スキップ
+    LDA P0Y
+    BEQ .p0NoUp         ; P0Y == 0 -> 上端なのでスキップ
+    SEC
+    SBC #PAD_SPEED
+    BCC .p0Top          ; アンダーフロー -> 上端にクランプ
+    STA P0Y
+    JMP .p0NoUp
+.p0Top:
+    LDA #0
+    STA P0Y
+.p0NoUp:
+
+    ; --- Player0 DOWN (bit5) ---
+    PLA
+    PHA
+    AND #JOY0_DOWN
+    BNE .p0NoDn         ; bit5 が 1 -> スキップ
+    LDA P0Y
+    CMP #PAD_BOT
+    BCS .p0NoDn         ; P0Y >= PAD_BOT -> 下端なのでスキップ
+    CLC
+    ADC #PAD_SPEED
+    CMP #PAD_BOT
+    BCS .p0AtBot
+    STA P0Y
+    JMP .p0NoDn
+.p0AtBot:
+    LDA #PAD_BOT
+    STA P0Y
+.p0NoDn:
+
+    ; --- Player1 UP (bit0) ---
+    PLA
+    PHA
+    AND #JOY1_UP
+    BNE .p1NoUp
+    LDA P1Y
+    BEQ .p1NoUp
+    SEC
+    SBC #PAD_SPEED
+    BCC .p1Top
+    STA P1Y
+    JMP .p1NoUp
+.p1Top:
+    LDA #0
+    STA P1Y
+.p1NoUp:
+
+    ; --- Player1 DOWN (bit1) ---
+    PLA
+    AND #JOY1_DOWN
+    BNE .p1NoDn
+    LDA P1Y
+    CMP #PAD_BOT
+    BCS .p1NoDn
+    CLC
+    ADC #PAD_SPEED
+    CMP #PAD_BOT
+    BCS .p1AtBot
+    STA P1Y
+    JMP .p1NoDn
+.p1AtBot:
+    LDA #PAD_BOT
+    STA P1Y
+.p1NoDn:
+    RTS
 
 ;;; ============================================================
 ;;; DrawScreen - 192スキャンライン描画
