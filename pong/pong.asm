@@ -235,19 +235,19 @@ ReadJoy:
 DrawScreen:
 
     ; HMP0/HMP1 を事前設定
-    LDA #$50            ; HMP0: 右に5カラークロック (RESP0を2cycle遅らせ+6cc、HMP-2 = 正味+4px)
+    LDA #$30            ; HMP0: 右に3カラークロック (RESP0を4cycle遅らせ+12cc、HMP-4 = 正味+8px)
     STA HMP0
     LDA #$10            ; HMP1: 右に1カラークロック
     STA HMP1
 
     ; --- Line 0: RESP0 を早期発火、遅延後 RESP1 ---
     STA WSYNC
-    NOP                 ; 2 (RESP0を6ccずらしてP0を+4px右へ)
-    STA RESP0           ; x≈0 に P0 を配置 (6サイクル目)
+    NOP                 ; 2
+    NOP                 ; 4 (RESP0を12ccずらしてP0を正味+8px右へ)
+    STA RESP0           ; x≈0 に P0 を配置 (8サイクル目)
 
     ; RESP1 を約71サイクル目に発火 -> x=(71-22)*3=147, +HMP1=1 -> x=148
-    ; STA RESP0 で6サイクル消費済み、残り65サイクル = 32 NOPs = 64サイクル
-    NOP                 ; 8
+    ; STA RESP0 で8サイクル消費済み、残り63サイクル = 31 NOPs = 62サイクル
     NOP                 ; 10
     NOP                 ; 12
     NOP                 ; 14
