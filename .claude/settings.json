@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "content=$(cat /Users/shinji/Documents/2D/260304_Claude-Code-Pong/TODO.md 2>/dev/null) && jq -n --arg c \"$content\" '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: (\"# プロジェクトTODO.md（セッション開始時に自動読込）\\n\\n作業開始前に必ず確認してください。\\n\\n---\\n\\n\" + $c)}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

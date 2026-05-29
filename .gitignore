@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# Build output
+cc-pong.bin
+
+# Local reference materials (not pushed)
+archive/
+docs_atari/
+docs_pong/
