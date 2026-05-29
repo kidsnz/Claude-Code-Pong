@@ -4,7 +4,7 @@
 
 ## 進行中
 
-- [ ] フォルダ整理（残：このTODO.md追加、Git init準備）
+- [ ] Step 1（スケルトン）から cc-pong.asm 制作開始
 
 ## 次にやる（優先順）
 
@@ -12,15 +12,8 @@
    - 10コアステップ + 2仕上げ（Phase A〜F）
    - APONG式カーネル前提
 
-3. [ ] **Git初期化 & GitHub接続**
-   - `git init` → 初回コミット
-   - `kidsnz/Claude-Code-Pong` を origin に
-   - main ブランチでプッシュ
-   - GitHub側のデフォルトブランチを main に変更
-   - 既存 `claude/atari-pong-assembly-6mvTF` ブランチはそのまま残す
-
-4. [ ] **cc-pong.asm 制作開始**
-   - 再設計した計画に沿ってステップ1から
+3. [ ] **cc-pong.asm 制作開始**
+   - `STEP_PLAN.md` に沿ってステップ1から
    - 各ステップ完了ごとにユーザーがStellaで確認 → OKでコミット
 
 ## 完了
@@ -29,6 +22,8 @@
 - [x] archive/ を terminal_01 / terminal_02 / claude.ai_ver に整理
 - [x] docs/, docs_reference/ を docs_atari/, docs_pong/ にリネーム
 - [x] グローバル CLAUDE.md に「整理整頓と標準化の重視」を追記
+- [x] STEP_PLAN.md 作成（10コア+2仕上げ）
+- [x] Git初期化 & GitHub接続（main をデフォルトブランチ化、参考資料はローカルのみ）
 
 ## アイデア・保留事項
 
